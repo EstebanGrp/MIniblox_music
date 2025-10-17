@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const applyBtn = document.getElementById("applyMusicBtn");
   const status = document.getElementById("status");
 
-  // Llenar menú con canciones
+
   MUSIC.forEach(name => {
     const option = document.createElement("option");
     option.value = name;
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Selected music:", selected);
     console.log("Custom URL:", custom);
 
-    // Si no hay selección ni URL → reset
+  
     if (!selected && !custom) {
       console.log("🔄 Resetting music");
       chrome.runtime.sendMessage({ type: "resetMusic" }, (response) => {
@@ -36,20 +36,20 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // Si no hay música seleccionada
+
     if (!selected) {
       alert("Select a track first");
       return;
     }
 
-    // Enviar al background
+
     console.log("📤 Sending message to background script");
     chrome.runtime.sendMessage({ type: "setMusic", musicName: selected, customUrl: custom || null }, (response) => {
       console.log("Background response:", response);
       if (response && response.ok) {
-        status.textContent = "✅ Music applied successfully.";
+        status.textContent = "✅Música aplicada exitosamente.";
       } else {
-        status.textContent = "❌ Error applying music. Check console.";
+        status.textContent = "❌ Error al aplicar la música. Revisa la consola.";
       }
     });
   });
