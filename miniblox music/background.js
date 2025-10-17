@@ -12,26 +12,26 @@ function getRuleIdForMusic(musicName) {
   if (index === -1) {
     throw new Error(`Unknown music name: ${musicName}`);
   }
-  return 2000 + index; // IDs distintos a las skins (1000+)
+  return 2000 + index; 
 }
 
 async function updateMusic(musicName, customUrl = null) {
   let urlToRedirect;
   const ruleId = getRuleIdForMusic(musicName);
 
-  console.log(`🎵 Attempting to update music: ${musicName}`);
-  console.log(`🆔 Rule ID: ${ruleId}`);
+  console.log(`🎵 Intentando actualizar la musica: ${musicName}`);
+  console.log(`🆔 Regla del ID: ${ruleId}`);
 
   try {
     if (customUrl) {
-      // Usar URL personalizada
+
       urlToRedirect = customUrl;
-      console.log(`🎯 Using custom URL: ${urlToRedirect}`);
+      console.log(`🎯 Usando una url custom: ${urlToRedirect}`);
       
-      // Usar proxy CORS para URLs externas
+
       if (customUrl.includes('docs.google.com') || customUrl.includes('github.com') || customUrl.includes('raw.githubusercontent.com')) {
-        console.log(`🔄 External URL detected, testing CORS proxies`);
-        // Probar múltiples proxies
+        console.log(`🔄 Url externa detectada, probando las CORS proxies`);
+
         const proxies = [
           `https://api.allorigins.win/raw?url=${encodeURIComponent(customUrl)}`,
           `https://corsproxy.io/?${encodeURIComponent(customUrl)}`,
@@ -39,45 +39,45 @@ async function updateMusic(musicName, customUrl = null) {
           `https://cors-anywhere.herokuapp.com/${customUrl}`
         ];
         
-        // Probar cada proxy hasta encontrar uno que funcione
+
         let workingProxy = null;
         for (const proxy of proxies) {
           try {
             console.log(`  Testing proxy: ${proxy}`);
             const response = await fetch(proxy, { method: 'HEAD' });
             if (response.ok) {
-              console.log(`  ✅ Working proxy found: ${proxy}`);
+              console.log(`  ✅ Proxy funcional encontrada: ${proxy}`);
               workingProxy = proxy;
               break;
             } else {
-              console.log(`  ❌ Proxy failed: ${response.status}`);
+              console.log(`  ❌ Proxy fallida: ${response.status}`);
             }
           } catch (err) {
-            console.log(`  ❌ Proxy error: ${err.message}`);
+            console.log(`  ❌ Error de Proxy: ${err.message}`);
           }
         }
         
         if (workingProxy) {
           urlToRedirect = workingProxy;
-          console.log(`🎯 Using working proxy: ${urlToRedirect}`);
+          console.log(`🎯 Usando proxy funcional: ${urlToRedirect}`);
         } else {
-          console.warn(`⚠️ No working proxy found, using original URL`);
-          // Usar la URL original como último recurso
+          console.warn(`⚠️ No se encontro una proxy funcional, usa una URL funcional >:v`);
+       
         }
       }
       
-      // Verificar que la URL personalizada sea accesible
+   
       try {
         const response = await fetch(urlToRedirect, { method: 'HEAD' });
-        console.log(`📡 Custom URL response: ${response.status} ${response.statusText}`);
+        console.log(`📡 Respuesta de la url custom: ${response.status} ${response.statusText}`);
         if (!response.ok) {
-          console.warn(`⚠️ Custom URL not accessible: ${response.status}`);
+          console.warn(`⚠️ La URL custom te ghosteo como tu ex XD: ${response.status}`);
         }
       } catch (fetchErr) {
-        console.warn(`⚠️ Could not test custom URL:`, fetchErr);
+        console.warn(`⚠️ No se pudo probar la URL personalizada, como tu el flan porque se lo comio tu primo:`, fetchErr);
       }
     } else {
-      // Probar diferentes formatos de URL posibles para Miniblox
+
       const possibleUrls = [
         `https://miniblox.io/audio/music/${musicName}.webm`,
         `https://miniblox.io/audio/music/${musicName}.mp3`,
@@ -90,7 +90,7 @@ async function updateMusic(musicName, customUrl = null) {
         `https://miniblox.io/sounds/${musicName}.mp3`
       ];
 
-      console.log(`🔍 Testing all possible URLs for ${musicName}:`);
+      console.log(`🔍 Probando todas las URL posibles para ${musicName}:`);
       let workingUrl = null;
       
       for (const testUrl of possibleUrls) {
@@ -100,21 +100,21 @@ async function updateMusic(musicName, customUrl = null) {
           console.log(`  Response: ${response.status} ${response.statusText}`);
           
           if (response.ok) {
-            console.log(`  ✅ Found working URL: ${testUrl}`);
+            console.log(`  ✅ ALFIN UNA URL VALIDA: ${testUrl}`);
             workingUrl = testUrl;
             break;
           }
         } catch (fetchErr) {
-          console.log(`  ❌ Failed: ${fetchErr.message}`);
+          console.log(`  ❌ fallo como tu en el amor: ${fetchErr.message}`);
         }
       }
       
       if (workingUrl) {
         urlToRedirect = workingUrl;
-        console.log(`🎯 Using working URL: ${urlToRedirect}`);
+        console.log(`🎯 Usando URL valida : ${urlToRedirect}`);
       } else {
-        console.error(`❌ No working URL found for ${musicName}!`);
-        throw new Error(`No valid audio URL found for ${musicName}`);
+        console.error(`❌ No se encontró ninguna URL que funcione para ${musicName}!`);
+        throw new Error(`❌ No se encontró una URL de audio válida para ${musicName}`);
       }
     }
 
@@ -130,25 +130,25 @@ async function updateMusic(musicName, customUrl = null) {
         condition: {
           urlFilter: `https://miniblox.io/*/${musicName}.*`,
           resourceTypes: ["media", "xmlhttprequest"]
-          // Algunos motores de juego cargan el audio como XHR
+    
         }
       }]
     });
 
-    // Intentar activar el AudioContext en la página de Miniblox
+
     try {
       const tabs = await chrome.tabs.query({ url: "https://miniblox.io/*" });
       if (tabs.length > 0) {
         await chrome.scripting.executeScript({
           target: { tabId: tabs[0].id },
           func: () => {
-            // Crear y activar AudioContext para permitir reproducción
+
             if (typeof AudioContext !== 'undefined' || typeof webkitAudioContext !== 'undefined') {
               const AudioContextClass = AudioContext || webkitAudioContext;
               const audioContext = new AudioContextClass();
               if (audioContext.state === 'suspended') {
                 audioContext.resume().then(() => {
-                  console.log('🎵 AudioContext activated for music playback');
+                  console.log('🎵 AudioContext activado para reproducción de música');
                 });
               }
             }
@@ -156,19 +156,19 @@ async function updateMusic(musicName, customUrl = null) {
         });
       }
     } catch (err) {
-      console.log('⚠️ Could not activate AudioContext:', err);
+      console.log('⚠️ No se pudo activar AudioContext:', err);
     }
 
-    // Guardar cambios
+
     chrome.storage.local.get(["currentMusic"], (data) => {
       const currentMusic = data.currentMusic || {};
       currentMusic[musicName] = urlToRedirect;
       chrome.storage.local.set({ currentMusic });
     });
 
-    console.log(`✅ Music rule created successfully: ${musicName} → ${urlToRedirect}`);
+    console.log(`✅ Cambio de musica creado con exito :D : ${musicName} → ${urlToRedirect}`);
   } catch (err) {
-    console.error("❌ Error updating music:", err);
+    console.error("❌ Error al poner musica nueva q-q :", err);
     throw err;
   }
 }
@@ -181,7 +181,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         console.error(err);
         sendResponse({ ok: false });
       });
-    return true; // mantener el canal abierto
+    return true;
   }
 
   if (message.type === "resetMusic") {
@@ -195,10 +195,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
 
         chrome.storage.local.set({ currentMusic: {} });
-        console.log("🎵 Music reset done.");
+        console.log("🎵 Reinicio de música realizado.");
         sendResponse({ ok: true });
       } catch (err) {
-        console.error("Error resetting music:", err);
+        console.error("Error reseteando musica:", err);
         sendResponse({ ok: false });
       }
     });
