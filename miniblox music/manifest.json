@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "Miniblox Music Changer",
+  "version": "2.0",
+  "permissions": [
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess",
+    "storage",
+    "scripting",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://miniblox.io/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/moka.png",
+      "48": "icons/moka.png",
+      "128": "icons/moka.png"
+    }
+  }
+}
+
+
+
