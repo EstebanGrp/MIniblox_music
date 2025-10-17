@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Miniblox Music Changer",
+  "name": "Cambiador de musica para miniblox.io",
   "version": "2.0",
   "permissions": [
     "declarativeNetRequest",
