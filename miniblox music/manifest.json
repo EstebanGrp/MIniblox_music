@@ -18,9 +18,9 @@
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "icons/moka.png",
-      "48": "icons/moka.png",
-      "128": "icons/moka.png"
+      "16": "icons/icon xd.png",
+      "48": "icons/icon xd.png",
+      "128": "icons/icon xd.png"
     }
   }
 }
